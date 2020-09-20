@@ -1,4 +1,7 @@
 (() => {
+    // socket io connection
+    const socket = io.connect('http://localhost:3333/');
+
     // props of the all <td />
     const items = [
         0, 0, 0,
@@ -32,30 +35,35 @@
 
         allTableData.forEach((value, index) => {
             value.addEventListener('click', () => {
-                toChangeArray(allTableData, index);
+                socket.emit('test', { position: index, itemArray: items });
             })
         })
     }
 
     // to change array itrms
-    function toChangeArray(arr, valIndex) {
+    function toChangeArray(valIndex) {
+        const allTableData = document.querySelectorAll('#hash td');
+
         if (flag && items[valIndex] === 0) {
             items[valIndex] = 1;
 
             // clorize blue item
-            arr[valIndex].classList.add('x');
+            allTableData[valIndex].classList.add('x');
             flag = false;
 
         } else if (!flag && items[valIndex] === 0) {
             items[valIndex] = 2;
 
             // clorize red item
-            arr[valIndex].classList.add('circule');
+            allTableData[valIndex].classList.add('circule');
             flag = true;
         }
     }
 
+    socket.on('test', (data) => {
+       toChangeArray(data.position);
+    })
+
     renderHashGame();
     addEvents();
 })();
-

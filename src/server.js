@@ -1,4 +1,3 @@
-const { Socket } = require('dgram');
 const express = require('express');
 const server = express();
 
@@ -11,4 +10,16 @@ server.get('/', (req, res) => {
     return res.render('../public/index');
 })
 
-server.listen(3333);
+const port = server.listen(3333);
+
+// io connection 
+const io = require('socket.io')(port);
+
+io.on('connection', (socket) => {
+    socket.on('test', (data) => {
+        io.sockets.emit('test', { 
+            position: data.position, 
+        });
+        console.log(data);
+    })
+})

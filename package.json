@@ -12,7 +12,7 @@
     "url": "git+https://github.com/andre2l2/HashGame.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Andre Ferreira",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/andre2l2/HashGame/issues"
@@ -21,7 +21,7 @@
   "dependencies": {
     "ejs": "^3.1.5",
     "express": "^4.17.1",
-    "soket.io": "0.0.1-security"
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
