@@ -12,7 +12,6 @@ server.get('/', (req, res) => {
 
 const port = server.listen(3333);
 
-// io connection 
 const io = require('socket.io')(port);
 
 io.on('connection', (socket) => {
@@ -20,6 +19,5 @@ io.on('connection', (socket) => {
         io.sockets.emit('test', { 
             position: data.position, 
         });
-        console.log(data);
     })
 })
