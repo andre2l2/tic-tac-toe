@@ -1,13 +1,16 @@
-* {
+* { 
+    /* Padoniza alguns comportamentos do navegador */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
+    /* Define uma altura e largura em relação a tela do usuario */
     height: 100vh;
     width: 100vw;
 
+    /* Centraliza os filhos do html ao centro */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,11 +27,13 @@ body {
 }
 
 .circule {
+    /* Adciona um circulo no jogo */
     background-repeat: no-repeat;
     background-image: url(./svg/circule.svg);
 }
 
 .x {
+    /* Adciona um circulo no jogo */
     background-repeat: no-repeat;
     background-image: url(./svg/x.svg);
 }
