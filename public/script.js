@@ -39,7 +39,6 @@ function addEvents() {
 
     allTableData.forEach((value, index) => {
         value.addEventListener('click', () => {
-
             // Emite a posição para o servidor
             socket.emit('test', { position: index });
         })
