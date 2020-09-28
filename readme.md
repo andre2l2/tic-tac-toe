@@ -17,7 +17,7 @@ Após isso você poderá abrir em: http://localhost:3333
 </p>
 
 ### Quais tecnologias usei
-Todo este projeto foi feito com _HTML_, _CSS_, e _JavaScript_ no FrontEnd, no backend utilizei o _node.js_, _express_ e _socket.io_ para fazer a coneção com o backend. O tutorual abaixo explica como fiz tudo passo a passo. 
+Esse projeto foi feito com _HTML_, _CSS_, e _JavaScript_ no FrontEnd. No backend utilizei o _node.js_, _express_ e _socket.io_ para fazer a coneção com o backend. O tutorual abaixo explica como fiz tudo passo a passo. __Boa leitura!__ 
 
 ---
 
@@ -204,6 +204,149 @@ Pronto! Agora se salvar e testar no seu navegador já está funcionado.
     <img src="./img/funcionalGame.gif">
 </p>
 
-Já temos 60% do projéto, todo o frontend já está pronto, agora vamos partir para o backend em _node_. 
+Temos 60% do projéto pronto, agora iremos para o backend em _node_. Vamos começar importando os modulos nessesarios. Lembre-se não esquça de fazer o _npm init -y_ antes.
 
-[working in progress]...
+```zsh
+% npm install express
+% npm install socket.io
+% npm install nodemon -D
+```
+
+Talvez o express você já o conheça, mas a sacada desse porjéto é o socket.io, ele é um _FrameWork_ focado para chat, mas funciona também em muitas outras coisas. Como trocar informaçoes com o frontend e atualizar todos os navegadores conectados. 
+Basicamente, qusndo o backend percebe alguma alteração, ele emite as informações para o frontend, assim todos os navegadores conectados serão atualizados simuntaneamente. Legal né? Então vamos lá!
+
+Cire uma pasta para separar o backend do frontend com a seguinte arquiteura de pastas:
+
+<p align="center">
+    <img src="./img/folder.png">
+</p>
+
+Dentro do diretório _src_ coloquei um arquivo chamado _server.js_, mas exsite muita gente que chama de _app.js_. Você pode chama-lo como quiser. Sim você pode chamar seu backend de "_jose.js_" se quiser!
+
+Agora dentro do seu arquivo "_jose.js_", no meu caso é o _server_, temos que inportar o express e o socket.io.
+
+```javascript
+const express = require('express');
+const server = express();
+
+server.get('/', (req, res) => {
+    return res.send('test');
+})
+
+server.listen(3333);
+```
+
+Se salvar e executar esse arquivo usando o _nodemon_ ou o prorio node, na url _http://localhost:3333_ verá um test, na tela do navegador. Mais agora precisamos comfigutar o _node_ para servir aquivos estátivos.
+
+```javascript
+const express = require('express');
+const server = express();
+
+// Configurações:
+server.use(express.urlencoded({ extended: true }));
+// Configuta a pasta publica do porjeto
+server.use(express.static('./public'));
+// Permite que o express use json
+server.use(express.json());
+
+// Requisições
+server.get('/', (req, res) => {
+    return res.render('../public/index');
+})
+
+// Porta
+server.listen(3333);
+```
+
+Agora ver a parte mais legal, vamos usar o _socket.io_ com o frontend. Vamos lá!
+
+```javascript
+const express = require('express');
+const server = express();
+
+server.use(express.urlencoded({ extended: true }));
+// Configuta a pasta publica do porjeto
+server.use(express.static('./public'));
+// Permite que o express use json
+server.use(express.json());
+
+// Requisições
+server.get('/', (req, res) => {
+    return res.render('../public/index');
+})
+
+// Porta
+const port = server.listen(3333);
+
+// Importa o socket.io
+const io = require('socket.io')(port);
+
+// Cria uma conequição que ficara ouvidno a porta 3333
+io.on('connection', (socket) => {
+    socket.on('test', (data) => {
+        // Cria um emit para o frontend.
+        io.sockets.emit('test', { 
+            position: data.position, 
+        });
+    })
+})
+```
+
+Perceba que no _emit_ eu o chamei de test, recomendo que mude para game, ou um nome mais aproriado. Eu irei deixar assim, pois usarei apenas para testes. 
+
+Acabou! Mais o menos. Precisamos voltar lá no FrontEnd e fazer algumas alterações. Temos importar a _CDN_ do socket.io para que possamos usar algumas funcões.
+
+```html
+<body>
+    
+    <div id="hash"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="./script.js"></script>
+</body>
+```
+
+Agora dentro do _script.js_ vamos criar uma função emit, bem parecido com a que fizemos no BackEnd lembrado que ela deve ter o mesmo node que colocamos, no meu caso foi _test_. Agora coloque esses scripts no topo de tudo, e caso tenha duvidas você pode olhar o arquivo principal. Mas até aqui não terá muito segredo.
+
+```javascript
+// Faz uma conexão com o socket.io no BackEnd
+const socket = io.connect('http://localhost:3333/');
+
+// Quando houver alteração no BackEnd
+socket.on('test', (data) => {
+    toChangeArray(data.position);
+})
+```
+
+E por fim, dentro da funcão de click, iremos enviar o index (posição) do arrey para o BackEnd, para que ele atualize todos os navegadores.
+
+```javascript
+function addEvents() {
+    const allTableData = document.querySelectorAll('#hash td');
+
+    allTableData.forEach((value, index) => {
+        value.addEventListener('click', () => {
+            // Emite a posição para o servidor
+            socket.emit('test', { position: index });
+        })
+    })
+}
+```
+
+Agora realmente acabou! Bastar salvar e executar em  dois navegadores diferentes, para ver o resultado.
+
+<p align="center">
+    <img src="./img/demo.gif">
+</p>
+
+---
+
+## Como ajudar?
+
+- Erros gramaticais sempre acabam surjindo no README.md, e caso encontre algum pode mandar a correção por aqui mesmo. Fivarei muito feliz. Obrigado!
+
+## Desafios:
+- Fazer uma função que indentifique quando um usuario ganhou.
+- Fazer um contador que mostre quantas vezes o usuario já ganhou.
+
+> Não esqueça de fazer um fork e me mandar seu pull request, fechado?

@@ -1,6 +1,7 @@
 const express = require('express');
 const server = express();
 
+// Configurações 
 server.set('view engine', 'ejs');
 server.use(express.urlencoded({ extended: true }));
 server.use(express.static('./public'));
@@ -12,6 +13,7 @@ server.get('/', (req, res) => {
 
 const port = server.listen(3333);
 
+// socket.io 
 const io = require('socket.io')(port);
 
 io.on('connection', (socket) => {
