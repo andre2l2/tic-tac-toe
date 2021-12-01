@@ -1,4 +1,4 @@
-# Hash Game
+# TIC-TAC-TOE
  
 ## Como rodar em sua máquina:
  
